@@ -4,7 +4,7 @@ import _debounce from "lodash/debounce";
 
 import { useWindowSize } from '../../standard_ui/standard_ui';
 
-import SortLandscape from './SortLandScape';
+import SortLandscape from './SortLandscape';
 import SortPortrait from './SortPortrait';
 
 import { ranges, sortAlgoNames, sortAlgos } from './sort_resources_2.js';
