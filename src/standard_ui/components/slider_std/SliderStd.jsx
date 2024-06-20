@@ -237,7 +237,6 @@ function SliderStd({ prMin, prMax, prValue, prStep, prOnChange, prLabel, prWidth
         [ prTheme, prIsActive, prUseOverlayInactive ]
     );
 
-
     // The classes for the label and value labels.
     let lClassNameLblLabel = prIsVertical ? "label lblV" : "label lblH lblLabelH";
     let lClassNameLblValue = prIsVertical ? "label lblV" : "label lblH lblValueH";
@@ -383,7 +382,16 @@ SliderStd.propTypes =
             borderCon: PropTypes.string.isRequired,
             backgroundProgress: PropTypes.string.isRequired,
             borderProgress: PropTypes.string.isRequired,
-            backgroundTrack: PropTypes.string.isRequired
+            font: PropTypes.string.isRequired,
+            backgroundTrack: PropTypes.string.isRequired,
+
+            borderConInactive: PropTypes.string.isRequired,
+            backgroundProgressInactive: PropTypes.string.isRequired,
+            borderProgressInactive: PropTypes.string.isRequired,
+            fontInactive: PropTypes.string.isRequired,
+            backgroundTrackInactive: PropTypes.string.isRequired,
+
+            overlayInactive: PropTypes.string.isRequired,
         }
     ),
     prIsActive: PropTypes.bool,
@@ -412,7 +420,7 @@ SliderStd.defaultProps =
         backgroundProgressInactive: "#383737",
         borderProgressInactive: "#8B8B8B",
         fontInactive: "#8B8B8B",
-        // backgroundTrack: "transparent"
+        backgroundTrackInactive: "transparent",
 
         overlayInactive: "#15151567"
     },

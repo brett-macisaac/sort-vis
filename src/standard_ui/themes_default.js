@@ -64,8 +64,6 @@ const themesDefault =
             font: "#ffffff",
             fontPlaceholder: "#ffffff",
             iconArrow: "#ffffff",
-            iconExpandMore: "#ffffff",
-            iconExpandLess: "#ffffff",
 
             backgroundInactive: "#353535",
             borderInactive: "#8B8B8B",
@@ -183,7 +181,7 @@ const themesDefault =
             backgroundProgressInactive: "#383737",
             borderProgressInactive: "#8B8B8B",
             fontInactive: "#8B8B8B",
-            // backgroundTrack: "transparent"
+            backgroundTrackInactive: "transparent",
 
             overlayInactive: "#15151567"
         },

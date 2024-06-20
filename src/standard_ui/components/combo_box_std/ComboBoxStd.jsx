@@ -310,11 +310,19 @@ ComboBoxStd.propTypes =
     prTheme: PropTypes.shape(
         {
             background: PropTypes.string.isRequired,
+            backgroundItems: PropTypes.string.isRequired,
             border: PropTypes.string.isRequired,
             font: PropTypes.string.isRequired,
             fontPlaceholder: PropTypes.string.isRequired,
-            iconExpandMore: PropTypes.string.isRequired,
-            iconExpandLess: PropTypes.string.isRequired,
+            iconArrow: PropTypes.string.isRequired,
+
+            backgroundInactive: PropTypes.string.isRequired,
+            borderInactive: PropTypes.string.isRequired,
+            fontInactive: PropTypes.string.isRequired,
+            fontPlaceholderInactive: PropTypes.string.isRequired,
+            iconArrowInactive: PropTypes.string.isRequired,
+
+            overlayInactive: PropTypes.string.isRequired,
         }
     ),
     prIsActive: PropTypes.bool,
@@ -344,6 +352,8 @@ ComboBoxStd.defaultProps =
         fontInactive: "#B4B4B4",
         fontPlaceholderInactive: "#B4B4B4",
         iconArrowInactive: "#B4B4B4",
+
+        overlayInactive: "#35353567"
     },
     prIsActive: true,
     prUseOverlayInactive: false,
