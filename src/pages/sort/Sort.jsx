@@ -76,7 +76,7 @@ function Sort({})
 
     const [ stIsAscending, setIsAscending ] = useState(true);
 
-    const rfIsVolumeOn = useRef(true);
+    const rfIsVolumeOn = useRef(false);
 
     // The speed (i.e. the number of milliseconds of each pause; the lower this value, the faster the sorting).
     // const [ stSpeed, setSpeed ] = useState(100);

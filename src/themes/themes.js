@@ -16,11 +16,17 @@ const themes =
     {
         ...themesDefault.dark,
 
+        pageContainer:
+        {
+            ...themesDefault.dark.background,
+            background: "#363636",
+        },
+
         // The theme used by the elements (i.e. the Element component).
         element:
         {
             // The standard background colour of an element.
-            background: "#000000",
+            background: "#000000", 
 
             backgroundComp: "#FF5900",
             backgroundSwap: "#FF0000",
