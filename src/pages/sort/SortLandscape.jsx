@@ -119,7 +119,7 @@ function SortLandscape({ prElements, prNumElements, prIndexSelectedSortAlgo, prS
             return { 
                 con: {
                     border: "none",
-                    borderRight: `1px solid ${"#ffffff"}`,
+                    borderLeft: `1px solid ${"#ffffff"}`,
                 }
             };
         },
@@ -131,11 +131,11 @@ function SortLandscape({ prElements, prNumElements, prIndexSelectedSortAlgo, prS
         {
             return { 
                 con: { 
-                    border: "none", borderLeft: `1px solid #ffffff`, 
+                    border: "none", borderRight: `1px solid #ffffff`, 
                     flexGrow: 1, width: 50
                 },
                 conItems: {
-                    border: "none", borderLeft: `1px solid #ffffff`, borderTop: `1px solid #ffffff`, 
+                    border: "none", borderRight: `1px solid #ffffff`, borderTop: `1px solid #ffffff`, 
                 }
             };
         },
@@ -165,6 +165,77 @@ function SortLandscape({ prElements, prNumElements, prIndexSelectedSortAlgo, prS
             prShowHeader = { false }
             prStyles = { styles.container } prTheme = { lTheme }
         >
+
+            <div style = { styles.conRight }>
+                <ButtonStd 
+                    prIcon = { lIconBtnSortDir }
+                    prStyles = { styles.btnSortDirection } prIsBorderDisabled = { false }
+                    prOnPress = { prOnPressBtnSortDir }
+                    prIsActive = { !prIsSorting }
+                />
+                <ComboBoxStd
+                    prItems = { sortAlgoNames } prIndexSelected = { prIndexSelectedSortAlgo }
+                    prDirection = "r" 
+                    //prLength = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix. Should be "100%"
+                    prOnPress = { prOnPressCmbSortAlgo }
+                    prHideScrollBar = { false }
+                    prMaxLengthItemBox = { Math.min(window.innerWidth * 0.4, 400) }
+                    prStyles = { lStyleComboBox } prWidth = { 50 }
+                    prIsActive = { !prIsSorting }
+                />
+            </div>
+
+            {/* Render elements */}
+            <div style = { styles.conElements } className = "hideScrollBar" onClick = { prOnPressChangeDirection }>
+                {
+                    prElements.map(
+                        (element, index) =>
+                        {
+                            let lWidthOuter = (index == 0 || element.value > prElements[index - 1].value) ? 
+                                                element.value : prElements[index - 1].value;
+
+                            return (
+                                <ElementView
+                                    key = { index } 
+                                    prElement = { element }
+                                    prLengthOuter = { lWidthOuter }
+                                    prLengthOuterStatic = { lWidthElement }
+                                    prLengthInnerStatic = "100%"
+                                    prIsColumn
+                                    prIsLastElement = { index == prElements.length - 1 }
+                                    prTheme = { lTheme?.element }
+                                    prUpdater = { prUpdater }
+                                />
+                            );
+                        }
+                    )
+                }
+            </div>
+
+            <div style = { styles.conSliders }>
+                <SliderStd 
+                    prIsVertical prIsVerticalTopDown
+                    prMin = { 1 } prMax = { ranges.speed.max } prValue = { ranges.speed.max - prSpeed + 1 } prStep = { 1 }
+                    prMinAllowed = { ranges.speed.min }
+                    prOnChange = { prOnChangeSliderSpeed }
+                    // prShowValue = { false }
+                    prLabel = "SPEED"
+                    prHeight = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix.
+                    prWidth = { 50 }
+                    prStyles = { lStyleSlider }
+                />
+
+                <SliderStd 
+                    prIsVertical prIsVerticalTopDown
+                    prMin = { 1 } prMax = { Math.min(ranges.numElements.max, lSpaceForElements) } prValue = { prNumElements } prStep = { 1 }
+                    prMinAllowed = { ranges.numElements.min }
+                    prOnChange = { prOnChangeSliderNumEls }
+                    prLabel = "LENGTH"
+                    prHeight = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix.
+                    prStyles = { lStyleSlider } prWidth = { 50 }
+                    prIsActive = { !prIsSorting }
+                />
+            </div>
 
             {/* Render buttons */}
             <div style = { lStyleConButtons } className = "hideScrollBar"> 
@@ -210,77 +281,6 @@ function SortLandscape({ prElements, prNumElements, prIndexSelectedSortAlgo, prS
                     }
                     prStyles = { styles.button }
                     prOnPress = { prOnPressBtnVolume }
-                />
-            </div>
-
-            <div style = { styles.conSliders }>
-                <SliderStd 
-                    prIsVertical prIsVerticalTopDown
-                    prMin = { 1 } prMax = { ranges.speed.max } prValue = { ranges.speed.max - prSpeed + 1 } prStep = { 1 }
-                    prMinAllowed = { ranges.speed.min }
-                    prOnChange = { prOnChangeSliderSpeed }
-                    // prShowValue = { false }
-                    prLabel = "SPEED"
-                    prHeight = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix.
-                    prWidth = { 50 }
-                    prStyles = { lStyleSlider }
-                />
-
-                <SliderStd 
-                    prIsVertical prIsVerticalTopDown
-                    prMin = { 1 } prMax = { Math.min(ranges.numElements.max, lSpaceForElements) } prValue = { prNumElements } prStep = { 1 }
-                    prMinAllowed = { ranges.numElements.min }
-                    prOnChange = { prOnChangeSliderNumEls }
-                    prLabel = "LENGTH"
-                    prHeight = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix.
-                    prStyles = { lStyleSlider } prWidth = { 50 }
-                    prIsActive = { !prIsSorting }
-                />
-            </div>
-
-            {/* Render elements */}
-            <div style = { styles.conElements } className = "hideScrollBar" onClick = { prOnPressChangeDirection }>
-                {
-                    prElements.map(
-                        (element, index) =>
-                        {
-                            let lWidthOuter = (index == 0 || element.value > prElements[index - 1].value) ? 
-                                                element.value : prElements[index - 1].value;
-
-                            return (
-                                <ElementView
-                                    key = { index } 
-                                    prElement = { element }
-                                    prLengthOuter = { lWidthOuter }
-                                    prLengthOuterStatic = { lWidthElement }
-                                    prLengthInnerStatic = "100%"
-                                    prIsColumn
-                                    prIsLastElement = { index == prElements.length - 1 }
-                                    prTheme = { lTheme?.element }
-                                    prUpdater = { prUpdater }
-                                />
-                            );
-                        }
-                    )
-                }
-            </div>
-
-            <div style = { styles.conRight }>
-                <ButtonStd 
-                    prIcon = { lIconBtnSortDir }
-                    prStyles = { styles.btnSortDirection } prIsBorderDisabled = { false }
-                    prOnPress = { prOnPressBtnSortDir }
-                    prIsActive = { !prIsSorting }
-                />
-                <ComboBoxStd
-                    prItems = { sortAlgoNames } prIndexSelected = { prIndexSelectedSortAlgo }
-                    prDirection = "l" 
-                    //prLength = { window.innerHeight } // Shouldn't need to do this, but there's a silly CSS bug that I have no idea how to fix. Should be "100%"
-                    prOnPress = { prOnPressCmbSortAlgo }
-                    prHideScrollBar = { false }
-                    prMaxLengthItemBox = { Math.min(window.innerWidth * 0.4, 400) }
-                    prStyles = { lStyleComboBox } prWidth = { 50 }
-                    prIsActive = { !prIsSorting }
                 />
             </div>
 
@@ -381,7 +381,7 @@ const styles =
             ...globalStyles.buttonStandardDefault,
             width: "100%",
             // backgroundColor: "#000000",
-            borderRight: "none",
+            borderLeft: "none",
             borderTop: "none",
             borderRadius: 0,
             padding: 5,
