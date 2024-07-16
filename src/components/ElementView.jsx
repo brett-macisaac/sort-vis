@@ -24,7 +24,7 @@ function ElementView({ prKey, prElement, prLengthOuter, prLengthOuterStatic,  pr
                 };
             }
         },
-        [ prLengthOuter, prLengthOuterStatic, prTheme ]
+        [ prLengthOuter, prLengthOuterStatic, prTheme, prIsColumn ]
     );
 
     const lStyleInner = useMemo(
@@ -89,7 +89,7 @@ function ElementView({ prKey, prElement, prLengthOuter, prLengthOuterStatic,  pr
     );
 
     return (
-        <div  
+        <div 
             style = { lStyleOuter }
         >
             <div

@@ -10,15 +10,12 @@ function WindowSizeProvider({ children })
     /* The dimensions/size of the window. */
     const [ stWindowSize, setWindowSize ] = useState({ width: window.innerWidth, height: window.innerHeight });
 
-    // Whether the screen is landscape (false if it's a square).
-    const isLandscape = stWindowSize.width > stWindowSize.height;
-
     /**
     * Updates stWindowSize.
     */
     const updateWindowSize = () =>
     {
-        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+        setWindowSize({ width: window.innerWidth, height: window.innerHeight, isLandscape: window.innerWidth > window.innerHeight });
     };
 
     /*
@@ -27,6 +24,9 @@ function WindowSizeProvider({ children })
     useEffect(
         () =>
         {
+            // Initialise window size.
+            updateWindowSize();
+
             // Set-up an event-listener for window resize.
             window.addEventListener('resize', utils.debounce(updateWindowSize, 200));
 
@@ -41,9 +41,7 @@ function WindowSizeProvider({ children })
 
     return (
         <WindowSizeContext.Provider 
-            value = {{ 
-                windowSize: stWindowSize, isLandscape
-            }}
+            value = { stWindowSize }
         >
             { children }
         </WindowSizeContext.Provider>

@@ -7,7 +7,7 @@ Refer to the example/test project to learn how to implement the library effectiv
 
 ## Dependencies
 The library requires the following node packages to be installed in the project:
-* @mui/icons-material: run 'npm npm install @mui/icons-material @mui/material @emotion/styled @emotion/react'
+* @mui/icons-material: run 'npm install @mui/icons-material @mui/material @emotion/styled @emotion/react'
 * react-router-dom: run 'npm install react-router-dom'
 
 ## PageContainer

@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
 import _debounce from "lodash/debounce";
 
-import { useWindowSize } from '../../standard_ui/standard_ui';
-
-import SortLandscape from './SortLandscape';
-import SortPortrait from './SortPortrait';
+import SortView from './SortView.jsx';
 
 import { ranges, sortAlgoNames, sortAlgos } from './sort_resources_2.js';
 
@@ -13,63 +10,8 @@ import { utils } from '../../standard_ui/standard_ui';
 
 import Elements, { SortAction } from "./Elements.js"
 
-let gAudioContext = null;
-
-const lFreqBase = 150;
-
-function playNote(pFreq)
-{
-    if (gAudioContext == null)
-    {
-        gAudioContext = new AudioContext();
-        // gAudioContext = new (AudioContext || window.webkitAudioContext)();
-    }
-
-    const lVolumeLow = 0.000001;
-    const lVolumeHigh = 0.15
-
-    const lDuration = 0.3;
-
-    const lTimeToHigh = 0.4;
-    const lTimeToLow = 0.4;
-
-    const lOsc = gAudioContext.createOscillator();
-
-    lOsc.frequency.value = pFreq;
-
-    const node = gAudioContext.createGain();
-
-    node.connect(gAudioContext.destination);
-
-    lOsc.connect(node);
-    // lOsc.stop(gAudioContext.currentTime + lTimeToHigh + lTimeToLow);
-
-    // node.gain.value = 0.1;
-
-    // Start Low
-    node.gain.setValueAtTime(lVolumeLow, gAudioContext.currentTime); 
-
-    // Low to high.
-    node.gain.exponentialRampToValueAtTime(
-        lVolumeHigh, gAudioContext.currentTime + lTimeToHigh
-    );
-
-    node.gain.setValueAtTime(lVolumeHigh, gAudioContext.currentTime + lTimeToHigh); 
-
-    // High to low.
-    node.gain.exponentialRampToValueAtTime(
-        lVolumeLow, gAudioContext.currentTime + lTimeToHigh + lTimeToLow
-    );
-
-    lOsc.start(gAudioContext.currentTime);
-
-    lOsc.stop(gAudioContext.currentTime + lTimeToHigh + lTimeToLow + 0.01);
-}
-
 function Sort({}) 
 {
-    const { windowSize, isLandscape } = useWindowSize();
-
     const [ stIndexSelectedSortAlgo, setIndexSelectedSortAlgo ] = useState(0);
 
     const [ stNumElements, setNumElements ] = useState(gDefaultNumElements);
@@ -412,10 +354,6 @@ function Sort({})
     const handleChangeSliderSpeed = useCallback(
         (pSpeed) =>
         {
-            // Invert the speed because the slider also shows the inverted value.
-            // setSpeed(ranges.speed.max - pSpeed + 1);
-            // console.log(`Speed: ${pSpeed}`)
-
             rfSpeed.current = ranges.speed.max - pSpeed + 1;
 
             rfReRender.current();
@@ -441,74 +379,95 @@ function Sort({})
         []
     );
 
-    // Pass in an object of functions which handle changing the state.
-
-    if (isLandscape)
-    {
-        return (
-            <SortLandscape
-                prElements = { rfElements.current.elements }
-                prNumElements = { stNumElements }
-                prIndexSelectedSortAlgo = { stIndexSelectedSortAlgo }
-                prSpeed = { rfSpeed.current }
-                prOnPlayPause = { handleBtnPlayPause }
-                prOnChangeSliderSpeed = { handleChangeSliderSpeed }
-                prOnChangeSliderNumEls = { setNumElements }
-                prOnPressBtnSortDir = { handleBtnSortDir }
-                prOnPressCmbSortAlgo = { setIndexSelectedSortAlgo }
-                prOnPressBtnShuffle = { handleBtnShuffle }
-                prOnPressBtnStop = { handleBtnStop }
-                prOnPressBtnVolume = { handleBtnVolume }
-                prOnPressChangeDirection = { handleChangeDirection }
-                prUpdater = { stUpdater }
-                prRefBtnStop = { rfBtnStop }
-                prRefBtnSkipNext = { rfBtnSkipNext }
-                prRefBtnSkipPrev = { rfBtnSkipPrev }
-                prRefBtnPlayPause = { rfBtnPlayPause }
-                prIsSorting = { rfIsSorting.current }
-                prIsPaused = { rfIsPaused.current }
-                prIsAscending = { stIsAscending }
-                prIsVolumeOn = { rfIsVolumeOn.current }
-            />
-        )
-    }
-    else
-    {
-        return (
-            <SortPortrait 
-                prElements = { rfElements.current.elements }
-                prNumElements = { stNumElements }
-                prIndexSelectedSortAlgo = { stIndexSelectedSortAlgo }
-                prSpeed = { rfSpeed.current }
-                prOnPlayPause = { handleBtnPlayPause }
-                prOnChangeSliderSpeed = { handleChangeSliderSpeed }
-                prOnChangeSliderNumEls = { setNumElements }
-                prOnPressBtnSortDir = { handleBtnSortDir }
-                prOnPressCmbSortAlgo = { setIndexSelectedSortAlgo }
-                prOnPressBtnShuffle = { handleBtnShuffle }
-                prOnPressBtnStop = { handleBtnStop }
-                prOnPressBtnVolume = { handleBtnVolume }
-                prOnPressChangeDirection = { handleChangeDirection }
-                prUpdater = { stUpdater }
-                prRefBtnStop = { rfBtnStop }
-                prRefBtnSkipNext = { rfBtnSkipNext }
-                prRefBtnSkipPrev = { rfBtnSkipPrev }
-                prRefBtnPlayPause = { rfBtnPlayPause }
-                prIsSorting = { rfIsSorting.current }
-                prIsPaused = { rfIsPaused.current }
-                prIsAscending = { stIsAscending }
-                prIsVolumeOn = { rfIsVolumeOn.current }
-            />
-        )
-    }
+    return (
+        <SortView
+            prElements = { rfElements.current.elements }
+            prNumElements = { stNumElements }
+            prIndexSelectedSortAlgo = { stIndexSelectedSortAlgo }
+            prSpeed = { rfSpeed.current }
+            prOnPlayPause = { handleBtnPlayPause }
+            prOnChangeSliderSpeed = { handleChangeSliderSpeed }
+            prOnChangeSliderNumEls = { setNumElements }
+            prOnPressBtnSortDir = { handleBtnSortDir }
+            prOnPressCmbSortAlgo = { setIndexSelectedSortAlgo }
+            prOnPressBtnShuffle = { handleBtnShuffle }
+            prOnPressBtnStop = { handleBtnStop }
+            prOnPressBtnVolume = { handleBtnVolume }
+            prOnPressChangeDirection = { handleChangeDirection }
+            prUpdater = { stUpdater }
+            prRefBtnStop = { rfBtnStop }
+            prRefBtnSkipNext = { rfBtnSkipNext }
+            prRefBtnSkipPrev = { rfBtnSkipPrev }
+            prRefBtnPlayPause = { rfBtnPlayPause }
+            prIsSorting = { rfIsSorting.current }
+            prIsPaused = { rfIsPaused.current }
+            prIsAscending = { stIsAscending }
+            prIsVolumeOn = { rfIsVolumeOn.current }
+        />
+    )
 }
 
+// The initial number of elements.
 const gDefaultNumElements = 25
 
-// Replace with getRandomFloat in standard_ui library when it's updated next.
-function getRandom(aMin, aMax)
+// The global audio-context.
+let gAudioContext = null;
+
+// The base frequency of the sound effects.
+const lFreqBase = 150;
+
+/**
+* Plays a note at a given frequency.
+
+* Parameters:
+    @param {number} pFreq The frequency at which to play the given note.
+*/
+function playNote(pFreq)
 {
-    return Math.random() * (aMax - aMin + 1) + aMin;
+    // Create the context if it's not already created,
+    if (gAudioContext == null)
+    {
+        gAudioContext = new AudioContext();
+        // gAudioContext = new (AudioContext || window.webkitAudioContext)();
+    }
+
+    // The 'low' volume and the 'high' volume.
+    const lVolumeLow = 0.000001;
+    const lVolumeHigh = 0.15
+
+    // The time it takes to go from the low volume to the high volume and vice-versa.
+    const lTimeToHigh = 0.4;
+    const lTimeToLow = 0.4;
+
+    // The oscillator used to create the tone.
+    const lOsc = gAudioContext.createOscillator();
+
+    // Set the oscillator's frequency.
+    lOsc.frequency.value = pFreq;
+
+    // Set a gain node.
+    const node = gAudioContext.createGain();
+    node.connect(gAudioContext.destination);
+    lOsc.connect(node);
+
+    // Start Low
+    node.gain.setValueAtTime(lVolumeLow, gAudioContext.currentTime); 
+
+    // Low to high.
+    node.gain.exponentialRampToValueAtTime(
+        lVolumeHigh, gAudioContext.currentTime + lTimeToHigh
+    );
+
+    node.gain.setValueAtTime(lVolumeHigh, gAudioContext.currentTime + lTimeToHigh); 
+
+    // High to low.
+    node.gain.exponentialRampToValueAtTime(
+        lVolumeLow, gAudioContext.currentTime + lTimeToHigh + lTimeToLow
+    );
+
+    lOsc.start(gAudioContext.currentTime);
+
+    lOsc.stop(gAudioContext.currentTime + lTimeToHigh + lTimeToLow + 0.01);
 }
 
 export default Sort;
