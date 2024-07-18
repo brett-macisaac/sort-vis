@@ -30,7 +30,7 @@ import ElementView from '../../components/ElementView.jsx';
 
 import { Element } from './Elements.js';
 
-import { sortAlgoNames, ranges } from './sort_resources_2';
+import { sortAlgoNames, ranges } from './sort_resources.js';
 
 function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed, prOnChangeSliderSpeed, 
                     prOnPlayPause, prOnChangeSliderNumEls, prOnPressBtnSortDir, prOnPressCmbSortAlgo, 
@@ -110,25 +110,29 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
     const lSpaceForElements = useMemo(
         () => 
             { 
-                let lWidthAvailable = Math.floor(
-                    windowSize.width - // window width
-                    2 * styles.containerLandscape.con.padding - // outer container padding
-                    2 * styles.conElementsLandscape.padding - // elements container padding
-                    50 - // combobox
-                    2 * 50 - // sliders
-                    lButtonProps.size - // button icon height.
-                    2 * styles.button.con.padding - // padding applied to the buttons.
-                    2 * styles.conButtons.padding - // padding applied to the buttons' container;
-                    3 * styles.containerLandscape.con.columnGap - // the total gaps between the three four 'segments'.
-                    1 // sometimes it can be a little off.
-                );
+                let lSpaceAvailable = windowSize.isLandscape ? windowSize.width : windowSize.height;
 
+                lSpaceAvailable -= 50 + // combobox
+                                   2 * 50 + // sliders
+                                   lButtonProps.size + // button icon height.
+                                   2 * styles.button.con.padding + // padding applied to the buttons.
+                                   2 * styles.conButtons.padding + // padding applied to the buttons' container;
+                                   1; // sometimes it can be a little off.
 
-                console.log(`Window Size: ${windowSize.width}`);
-                console.log(`Button Size: ${lButtonProps.size}`);
-                console.log(`Space for elements: ${lWidthAvailable}`);
+                if (windowSize.isLandscape)
+                {
+                    lSpaceAvailable -= 2 * styles.containerLandscape.con.padding + // outer container padding
+                                       2 * styles.conElementsLandscape.padding + // elements container padding
+                                       3 * styles.containerLandscape.con.columnGap; // the total gaps between the main segments
+                }
+                else
+                {
+                    lSpaceAvailable -= 2 * styles.containerPortrait.con.padding + // outer container padding
+                                       2 * styles.conElementsPortrait.padding + // elements container padding
+                                       3 * styles.containerPortrait.con.rowGap; // the total gaps between the main segments
+                }
 
-                return lWidthAvailable;
+                return Math.floor(lSpaceAvailable);
             }, 
         [ windowSize, lButtonProps ]
     ); 

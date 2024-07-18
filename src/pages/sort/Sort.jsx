@@ -4,7 +4,7 @@ import _debounce from "lodash/debounce";
 
 import SortView from './SortView.jsx';
 
-import { ranges, sortAlgoNames, sortAlgos } from './sort_resources_2.js';
+import { ranges, sortAlgoNames, sortAlgos } from './sort_resources.js';
 
 import { utils } from '../../standard_ui/standard_ui';
 
