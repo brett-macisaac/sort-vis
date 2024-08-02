@@ -101,7 +101,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
             // The size of each button along the direction that the buttons are arranged (i.e. either vertical or horizontal).
             let lSize = (lSpaceAvailable - 2 * styles.conButtons.padding - 5 * lGap - 12 * styles.button.con.padding) / 6;
 
-            return { size: lSize, gap: lGap }; 
+            return { size: lSize , gap: lGap }; 
         },
         [ windowSize ]
     );
@@ -336,12 +336,11 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                     prMin = { 1 } prMax = { ranges.speed.max } prValue = { ranges.speed.max - prSpeed + 1 } prStep = { 1 }
                     prMinAllowed = { ranges.speed.min }
                     prOnChange = { prOnChangeSliderSpeed }
-                    // prShowValue = { false }
                     prLabel = "SPEED"
                     prHeight = { windowSize.isLandscape ? window.innerHeight : 50 }
                     prWidth = { windowSize.isLandscape ? 50 : undefined }
                     prStyles = { lStyleSlider }
-                />
+                /> 
 
                 <SliderStd 
                     prIsVertical = { windowSize.isLandscape } prIsVerticalTopDown
@@ -365,15 +364,15 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                     prOnPress = { prOnPlayPause }
                 />
                 <ButtonStd 
-                    prIcon = { <SkipNextIcon sx = { lStyleButtonIcon } /> }
-                    prStyles = { styles.button }
-                    prRef = { prRefBtnSkipNext }
-                    prIsActive = { !prIsSorting || prIsPaused }
-                />
-                <ButtonStd 
                     prIcon = { <SkipPreviousIcon sx = { lStyleButtonIcon } /> }
                     prStyles = { styles.button }
                     prRef = { prRefBtnSkipPrev }
+                    prIsActive = { !prIsSorting || prIsPaused }
+                />
+                <ButtonStd 
+                    prIcon = { <SkipNextIcon sx = { lStyleButtonIcon } /> }
+                    prStyles = { styles.button }
+                    prRef = { prRefBtnSkipNext }
                     prIsActive = { !prIsSorting || prIsPaused }
                 />
                 <ButtonStd 
@@ -514,7 +513,7 @@ const styles =
     conComboBoxLandscape:
     {
         flexDirection: "column",
-        height: "100%",
+        height: "100%", minHeight: "100%",
         flexShrink: 0,
     },
     conComboBoxPortrait:
