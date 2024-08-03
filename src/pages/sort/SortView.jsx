@@ -47,45 +47,61 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
 
     const navigate = useNavigate();
 
+    // Whether to display the app in 'landscape' orientation.
+    const lIsLandScape = useMemo(
+        () =>
+        {
+            if (windowSize.isLandscape)
+            {
+                return windowSize.height < 1000 || windowSize.width < 500
+            }
+            else
+            {
+                return false
+            }
+        },
+        [ windowSize ]
+    );
+
     const lStyleCon = useMemo(
         () =>
         {
-            return windowSize.isLandscape ? styles.containerLandscape : styles.containerPortrait;
+            return lIsLandScape ? styles.containerLandscape : styles.containerPortrait;
         },
-        [ windowSize ]
+        [ lIsLandScape ]
     );
 
     const lStyleConComboBox = useMemo(
         () =>
         {
-            return windowSize.isLandscape ? styles.conComboBoxLandscape : styles.conComboBoxPortrait;
+            return lIsLandScape ? styles.conComboBoxLandscape : styles.conComboBoxPortrait;
         },
-        [ windowSize ]
+        [ lIsLandScape ]
     );
 
     const lStyleConElements = useMemo(
         () =>
         {
-            return windowSize.isLandscape ? styles.conElementsLandscape : styles.conElementsPortrait;
+            return lIsLandScape ? styles.conElementsLandscape : styles.conElementsPortrait;
         },
-        [ windowSize ]
+        [ lIsLandScape ]
     );
 
     const lStyleConSliders = useMemo(
         () =>
         {
-            return windowSize.isLandscape ? { ...styles.conSliders, ...styles.conSlidersLandscape } : 
-                                            { ...styles.conSliders, ...styles.conSlidersPortrait };
+            return lIsLandScape ? { ...styles.conSliders, ...styles.conSlidersLandscape } : 
+                                  { ...styles.conSliders, ...styles.conSlidersPortrait };
         },
-        [ windowSize ]
+        [ lIsLandScape ]
     );
 
     const lStyleBtnSortDirection = useMemo(
         () =>
         {
-            return windowSize.isLandscape ? styles.btnSortDirectionLandscape : styles.btnSortDirectionPortrait;
+            return lIsLandScape ? styles.btnSortDirectionLandscape : styles.btnSortDirectionPortrait;
         },
-        [ windowSize ]
+        [ lIsLandScape ]
     );
 
     // Props related to the buttons.
@@ -93,33 +109,37 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
         () => 
         { 
             // The total available space along the direction that the buttons are arranged (i.e. either vertical or horizontal).
-            let lSpaceAvailable = windowSize.isLandscape ? windowSize.height : windowSize.width;
+            let lSpaceAvailable = lIsLandScape ? windowSize.height : windowSize.width;
 
             // The size of the gap between the buttons along the direction that the buttons are arranged (i.e. either vertical or horizontal).
-            let lGap = windowSize.isLandscape ? lSpaceAvailable * 0.04 : lSpaceAvailable * 0.04;
+            let lGap = lSpaceAvailable * 0.04;
 
             // The size of each button along the direction that the buttons are arranged (i.e. either vertical or horizontal).
-            let lSize = (lSpaceAvailable - 2 * styles.conButtons.padding - 5 * lGap - 12 * styles.button.con.padding) / 6;
+            let lSize = (lSpaceAvailable - 2 * styles.conButtonsOuter.padding - 5 * lGap - 12 * styles.button.con.padding) / 6;
 
-            return { size: lSize , gap: lGap }; 
+            // Make sure the size is between the min and max.
+            lSize = lSize > 150 ? 150 : lSize;
+            lSize = lSize < 40 ? 40 : lSize;
+
+            return { size: lSize * 0.98, gap: lGap }; 
         },
-        [ windowSize ]
+        [ windowSize, lIsLandScape ]
     );
 
     // The total space available for the elements (in the direction in which they're displayed.).
     const lSpaceForElements = useMemo(
         () => 
             { 
-                let lSpaceAvailable = windowSize.isLandscape ? windowSize.width : windowSize.height;
+                let lSpaceAvailable = lIsLandScape ? windowSize.width : windowSize.height;
 
-                lSpaceAvailable -= 50 + // combobox
-                                   2 * 50 + // sliders
+                lSpaceAvailable -= 60 + // combobox
+                                   2 * 60 + // sliders
                                    lButtonProps.size + // button icon height.
                                    2 * styles.button.con.padding + // padding applied to the buttons.
-                                   2 * styles.conButtons.padding + // padding applied to the buttons' container;
+                                   2 * styles.conButtonsOuter.padding + // padding applied to the buttons' container;
                                    1; // sometimes it can be a little off.
 
-                if (windowSize.isLandscape)
+                if (lIsLandScape)
                 {
                     lSpaceAvailable -= 2 * styles.containerLandscape.con.padding + // outer container padding
                                        2 * styles.conElementsLandscape.padding + // elements container padding
@@ -132,9 +152,9 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                                        3 * styles.containerPortrait.con.rowGap; // the total gaps between the main segments
                 }
 
-                return Math.floor(lSpaceAvailable);
+                return Math.floor(lSpaceAvailable * 0.98);
             }, 
-        [ windowSize, lButtonProps ]
+        [ windowSize, lButtonProps, lIsLandScape ]
     ); 
 
     // The width of each element (%). This is the size measured along the direction in which the elements are displayed.
@@ -156,29 +176,48 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
         [ themeName, lButtonProps ]
     );
 
-    const lStyleConButtons = useMemo(
+    const lStyleConButtonsOuter = useMemo(
         () =>
         {
-            if (windowSize.isLandscape)
+            if (lIsLandScape)
             {
                 return {
-                    ...styles.conButtons, ...styles.conButtonsLandScape, rowGap: lButtonProps.gap
+                    ...styles.conButtonsOuter, ...styles.conButtonsLandscapeOuter, overflowY: "scroll"
                 };
             }
             else
             {
                 return {
-                    ...styles.conButtons, ...styles.conButtonsPortrait, columnGap: lButtonProps.gap
+                    ...styles.conButtonsOuter, ...styles.conButtonsPortraitOuter, overflowX: "scroll"
                 };
             }
         },
-        [ themeName, lButtonProps, windowSize ]
+        [ themeName, lButtonProps, lIsLandScape ]
+    );
+
+    const lStyleConButtonsInner = useMemo(
+        () =>
+        {
+            if (lIsLandScape)
+            {
+                return {
+                    ...styles.conButtonsInner, ...styles.conButtonsLandscapeInner, rowGap: lButtonProps.gap
+                };
+            }
+            else
+            {
+                return {
+                    ...styles.conButtonsInner, ...styles.conButtonsPortraitInner, columnGap: lButtonProps.gap
+                };
+            }
+        },
+        [ themeName, lButtonProps, lIsLandScape ]
     );
 
     const lStyleSlider = useMemo(
         () =>
         {
-            if (windowSize.isLandscape)
+            if (lIsLandScape)
             {
                 return { 
                     con: {
@@ -197,18 +236,18 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                 };
             }
         },
-        [ themeName, windowSize ]
+        [ themeName, lIsLandScape ]
     );
 
     const lStyleComboBox = useMemo(
         () =>
         {
-            if (windowSize.isLandscape)
+            if (lIsLandScape)
             {
                 return { 
                     con: { 
                         border: "none", borderRight: `1px solid #ffffff`, 
-                        flexGrow: 1, width: 50
+                        flexGrow: 1, width: 60
                     },
                     conItems: {
                         border: "none", borderRight: `1px solid #ffffff`, borderTop: `1px solid #ffffff`, 
@@ -220,7 +259,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                 return { 
                     con: { 
                         border: "none", borderBottom: `1px solid #ffffff`, 
-                        flexGrow: 1, height: 50,
+                        flexGrow: 1, height: 60,
                         width: 1, // Width is required to be set so that flexGrow works.
                     },
                     conItems: {
@@ -229,7 +268,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                 };
             }
         },
-        [ themeName, windowSize ]
+        [ themeName, lIsLandScape ]
     );
 
     const lStyleIconBtnSortDir = useMemo(
@@ -243,7 +282,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
     const lIconBtnSortDir = useMemo(
         () =>
         {
-            if (windowSize.isLandscape)
+            if (lIsLandScape)
             {
                 return prIsAscending ? <ArrowForwardIcon sx = { lStyleIconBtnSortDir } /> :
                                        <ArrowBackIcon sx = { lStyleIconBtnSortDir } />;
@@ -254,7 +293,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                                        <ArrowUpwardIcon sx = { lStyleIconBtnSortDir } />;
             }
         },
-        [ themeName, prIsAscending, windowSize ]
+        [ themeName, prIsAscending, lIsLandScape ]
     );
 
     const lIconBtnPlayPause = useMemo(
@@ -291,13 +330,13 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                 />
                 <ComboBoxStd
                     prItems = { sortAlgoNames } prIndexSelected = { prIndexSelectedSortAlgo }
-                    prDirection = { windowSize.isLandscape ? "r" : "d" } 
-                    prLength = { windowSize.isLandscape ? undefined : "100%" } 
+                    prDirection = { lIsLandScape ? "r" : "d" } 
+                    prLength = { lIsLandScape ? undefined : "100%" } 
                     prOnPress = { prOnPressCmbSortAlgo }
                     prHideScrollBar = { false }
-                    prMaxLengthItemBox = { windowSize.isLandscape ? Math.min(windowSize.width * 0.4, 400) : Math.min(windowSize.height * 0.4, 400) }
-                    prWidth = { windowSize.isLandscape ? 50 : undefined }
-                    prHeight = { windowSize.isLandscape ? undefined : 50 }
+                    prMaxLengthItemBox = { lIsLandScape ? Math.min(windowSize.width * 0.4, 400) : Math.min(windowSize.height * 0.4, 400) }
+                    prWidth = { lIsLandScape ? 60 : undefined }
+                    prHeight = { lIsLandScape ? undefined : 60 }
                     prStyles = { lStyleComboBox }
                     prIsActive = { !prIsSorting }
                 />
@@ -319,7 +358,7 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
                                     prLengthOuter = { lWidthOuter }
                                     prLengthOuterStatic = { lWidthElement }
                                     prLengthInnerStatic = "100%"
-                                    prIsColumn = { windowSize.isLandscape }
+                                    prIsColumn = { lIsLandScape }
                                     prIsLastElement = { index == prElements.length - 1 }
                                     prTheme = { lTheme?.element }
                                     prUpdater = { prUpdater }
@@ -332,66 +371,68 @@ function SortView({ prElements, prNumElements, prIndexSelectedSortAlgo, prSpeed,
 
             <div style = { lStyleConSliders }>
                 <SliderStd 
-                    prIsVertical = { windowSize.isLandscape } prIsVerticalTopDown
+                    prIsVertical = { lIsLandScape } prIsVerticalTopDown
                     prMin = { 1 } prMax = { ranges.speed.max } prValue = { ranges.speed.max - prSpeed + 1 } prStep = { 1 }
                     prMinAllowed = { ranges.speed.min }
                     prOnChange = { prOnChangeSliderSpeed }
                     prLabel = "SPEED"
-                    prHeight = { windowSize.isLandscape ? window.innerHeight : 50 }
-                    prWidth = { windowSize.isLandscape ? 50 : undefined }
+                    prHeight = { lIsLandScape ? window.innerHeight : 60 }
+                    prWidth = { lIsLandScape ? 60 : undefined }
                     prStyles = { lStyleSlider }
                 /> 
 
                 <SliderStd 
-                    prIsVertical = { windowSize.isLandscape } prIsVerticalTopDown
+                    prIsVertical = { lIsLandScape } prIsVerticalTopDown
                     prMin = { 1 } prMax = { Math.min(ranges.numElements.max, lSpaceForElements)} prValue = { prNumElements } prStep = { 1 }
                     prMinAllowed = { ranges.numElements.min }
                     prOnChange = { prOnChangeSliderNumEls }
                     prLabel = "LENGTH"
-                    prHeight = { windowSize.isLandscape ? window.innerHeight : 50 }
-                    prWidth = { windowSize.isLandscape ? 50 : undefined }
+                    prHeight = { lIsLandScape ? window.innerHeight : 60 }
+                    prWidth = { lIsLandScape ? 60 : undefined }
                     prStyles = { lStyleSlider } 
                     prIsActive = { !prIsSorting }
                 />
             </div>
 
             {/* Render buttons */}
-            <div style = { lStyleConButtons } className = "hideScrollBar"> 
-                <ButtonStd 
-                    prIcon = { lIconBtnPlayPause }
-                    prStyles = { styles.button }
-                    prRef = { prRefBtnPlayPause }
-                    prOnPress = { prOnPlayPause }
-                />
-                <ButtonStd 
-                    prIcon = { <SkipPreviousIcon sx = { lStyleButtonIcon } /> }
-                    prStyles = { styles.button }
-                    prRef = { prRefBtnSkipPrev }
-                    prIsActive = { !prIsSorting || prIsPaused }
-                />
-                <ButtonStd 
-                    prIcon = { <SkipNextIcon sx = { lStyleButtonIcon } /> }
-                    prStyles = { styles.button }
-                    prRef = { prRefBtnSkipNext }
-                    prIsActive = { !prIsSorting || prIsPaused }
-                />
-                <ButtonStd 
-                    prIcon = { <StopIcon sx = { lStyleButtonIcon } /> }
-                    prStyles = { styles.button }
-                    prRef = { prRefBtnStop }
-                    prOnPress = { prOnPressBtnStop }
-                />
-                <ButtonStd 
-                    prIcon = { <ShuffleIcon sx = { lStyleButtonIcon } /> }
-                    prStyles = { styles.button }
-                    prOnPress = { prOnPressBtnShuffle }
-                    prIsActive = { !prIsSorting }
-                />
-                <ButtonStd 
-                    prIcon = { lIconBtnVolume }
-                    prStyles = { styles.button }
-                    prOnPress = { prOnPressBtnVolume }
-                />
+            <div style = { lStyleConButtonsOuter } className = "hideScrollBar"> 
+                <div style = { lStyleConButtonsInner }>
+                    <ButtonStd 
+                        prIcon = { lIconBtnPlayPause }
+                        prStyles = { styles.button }
+                        prRef = { prRefBtnPlayPause }
+                        prOnPress = { prOnPlayPause }
+                    />
+                    <ButtonStd 
+                        prIcon = { <SkipPreviousIcon sx = { lStyleButtonIcon } /> }
+                        prStyles = { styles.button }
+                        prRef = { prRefBtnSkipPrev }
+                        prIsActive = { !prIsSorting || prIsPaused }
+                    />
+                    <ButtonStd 
+                        prIcon = { <SkipNextIcon sx = { lStyleButtonIcon } /> }
+                        prStyles = { styles.button }
+                        prRef = { prRefBtnSkipNext }
+                        prIsActive = { !prIsSorting || prIsPaused }
+                    />
+                    <ButtonStd 
+                        prIcon = { <StopIcon sx = { lStyleButtonIcon } /> }
+                        prStyles = { styles.button }
+                        prRef = { prRefBtnStop }
+                        prOnPress = { prOnPressBtnStop }
+                    />
+                    <ButtonStd 
+                        prIcon = { <ShuffleIcon sx = { lStyleButtonIcon } /> }
+                        prStyles = { styles.button }
+                        prOnPress = { prOnPressBtnShuffle }
+                        prIsActive = { !prIsSorting }
+                    />
+                    <ButtonStd 
+                        prIcon = { lIconBtnVolume }
+                        prStyles = { styles.button }
+                        prOnPress = { prOnPressBtnVolume }
+                    />
+                </div>
             </div>
 
         </PageContainerStd>
@@ -407,7 +448,7 @@ const styles =
             alignItems: "center",
             flexDirection: "row",
             padding: 0,
-            columnGap: 15
+            columnGap: 15,
         }
     },
     containerPortrait:
@@ -429,20 +470,33 @@ const styles =
         }
     },
 
-    conButtons: 
+    conButtonsOuter: 
     {
-        justifyContent: "center",
         padding: 10
     },
-    conButtonsLandScape: 
+    conButtonsInner: 
+    {
+        margin: "auto"
+    },
+
+    conButtonsLandscapeOuter: 
     {
         height: "100%",
-        flexDirection: "column",
     },
-    conButtonsPortrait: 
+    conButtonsLandscapeInner:
+    {
+        flexDirection: "column",
+        margin: "auto"
+    },
+
+    conButtonsPortraitOuter: 
     {
         width: "100%",
+    },
+    conButtonsPortraitInner:
+    {
         flexDirection: "row",
+        margin: "auto"
     },
 
     button:
@@ -488,7 +542,7 @@ const styles =
     conElementsLandscape:
     {
         flexGrow: 1, 
-        height: "100%", 
+        height: "100vh", // todo: was using 100%, but there was an issue where the height would collapse to 0.
         flexDirection: "row", 
         alignItems: "flex-end", justifyContent: "center", 
         overflowX: "scroll",
@@ -513,7 +567,7 @@ const styles =
     conComboBoxLandscape:
     {
         flexDirection: "column",
-        height: "100%", minHeight: "100%",
+        height: "100vh", // todo: was using 100%, but there was an issue where the height would collapse to contents.
         flexShrink: 0,
     },
     conComboBoxPortrait:

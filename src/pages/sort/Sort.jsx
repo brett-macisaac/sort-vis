@@ -12,7 +12,7 @@ import Elements, { SortAction } from "./Elements.js"
 
 function Sort({}) 
 {
-    const [ stIndexSelectedSortAlgo, setIndexSelectedSortAlgo ] = useState(0);
+    const [ stIndexSelectedSortAlgo, setIndexSelectedSortAlgo ] = useState(4);
 
     const [ stNumElements, setNumElements ] = useState(gDefaultNumElements);
 
@@ -408,7 +408,7 @@ function Sort({})
 }
 
 // The initial number of elements.
-const gDefaultNumElements = 25
+const gDefaultNumElements = 40
 
 // The global audio-context.
 let gAudioContext = null;
