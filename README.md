@@ -7,9 +7,13 @@ Key Features:
 - A UI that adapts well to most screen sizes, including mobile devices.
 - Works when the device is offline.
 - Optional sound-effects.
-- Controls for pausing the sorting process and stepping forwards or backwards, which is useful for learning how these algorithms work.
+- Controls for pausing the sorting process and stepping forwards or backwards which is useful for learning how these algorithms work.
 - The length of the bar-chart can be customised.
 - The speed of the sorting process can be adjusted.
+
+# Example 
+
+![Example GIF](readme_resources/example.gif)
 
 # Where To Access
 
